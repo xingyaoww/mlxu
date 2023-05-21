@@ -49,29 +49,28 @@ class WandBLogger(object):
             else:
                 self.config.project = "{}--{}".format(self.config.prefix, self.config.project)
 
-        if self.enable:
-            if self.config.output_dir == "":
-                self.config.output_dir = tempfile.mkdtemp()
-            else:
-                self.config.output_dir = os.path.join(
-                    self.config.output_dir, self.config.experiment_id
-                )
-                if not self.config.output_dir.startswith("gs://"):
-                    os.makedirs(self.config.output_dir, exist_ok=True)
+        if self.config.output_dir == "":
+            self.config.output_dir = tempfile.mkdtemp()
+        else:
+            self.config.output_dir = os.path.join(
+                self.config.output_dir, self.config.experiment_id
+            )
+            if not self.config.output_dir.startswith("gs://"):
+                os.makedirs(self.config.output_dir, exist_ok=True)
 
-            if self.config.wandb_dir == "":
-                if not self.config.output_dir.startswith("gs://"):
-                    # Use the same directory as output_dir if it is not a GCS path.
-                    self.config.wandb_dir = self.config.output_dir
-                else:
-                    # Otherwise, use a temporary directory.
-                    self.config.wandb_dir = tempfile.mkdtemp()
+        if self.config.wandb_dir == "":
+            if not self.config.output_dir.startswith("gs://"):
+                # Use the same directory as output_dir if it is not a GCS path.
+                self.config.wandb_dir = self.config.output_dir
             else:
-                # Join the wandb_dir with the experiment_id.
-                self.config.wandb_dir = os.path.join(
-                    self.config.wandb_dir, self.config.experiment_id
-                )
-                os.makedirs(self.config.wandb_dir, exist_ok=True)
+                # Otherwise, use a temporary directory.
+                self.config.wandb_dir = tempfile.mkdtemp()
+        else:
+            # Join the wandb_dir with the experiment_id.
+            self.config.wandb_dir = os.path.join(
+                self.config.wandb_dir, self.config.experiment_id
+            )
+            os.makedirs(self.config.wandb_dir, exist_ok=True)
 
         self._variant = flatten_config_dict(variant)
 
