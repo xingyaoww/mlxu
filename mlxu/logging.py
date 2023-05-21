@@ -87,7 +87,7 @@ class WandBLogger(object):
                 config=self._variant,
                 project=self.config.project,
                 dir=self.config.wandb_dir,
-                id=self.config.experiment_id,
+                id=self.config.experiment_id + "--" + uuid.uuid4().hex,
                 anonymous=self.config.anonymous,
                 notes=self.config.notes,
                 entity=self.config.entity,
